@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>Deletion</h1>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form method="post">
+                {% csrf_token %}
+                <h3>Are you sure you want to delete "{{ user.name }} ({{ user.id }})"</h3>
+                <input type="submit" class="btn btn-danger" value="Confirm" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

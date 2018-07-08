@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>{{ page_header }}</h1>
+            <form method="post" class="user_form">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                               id="inputName" name="name"
+                                {% if form.name.value and not form.name.errors %} value="{{ form.name.value }}"{% endif %}>
+                        <div class="invalid-feedback">
+                            {{ form.name.errors }}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="inputCompany" class="col-sm-2 col-form-label">Company</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control {% if form.company.errors %}is-invalid{% endif %}"
+                               id="inputCompany" name="company"
+                               {% if form.company.value and not form.company.errors %} value="{{ form.company.value }}"{% endif %}>
+                        <div class="invalid-feedback">
+                            {{ form.company.errors }}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                               id="inputEmail" name="email"
+                               {% if form.email.value and not form.email.errors %} value="{{ form.email.value }}"{% endif %}>
+                        <div class="invalid-feedback">
+                            {{ form.email.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPhone" class="col-sm-2 col-form-label">Phone</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                               id="inputPhone" name="phone" data-inputmask="'mask': '+7-(\\999)-999-99-99'"
+                               {% if form.phone.value and not form.phone.errors %} value="{{ form.phone.value }}"{% endif %}>
+                        <div class="invalid-feedback">
+                            {{ form.phone.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputInterests" class="col-sm-2 col-form-label">Interests</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control {% if form.interests.errors %}is-invalid{% endif %}"
+                               id="inputInterests" name="interests"
+                               {% if form.interests.value and not form.interests.errors %} value="{{ form.interests.value }}"{% endif %}>
+                        <div class="invalid-feedback">
+                            {{ form.interests.errors }}
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function () {
+        Inputmask().mask($('#inputPhone'));
+        $('.user_form').submit(function () {
+            let is_valid = true;
+            let emailInput = $('#inputEmail');
+            if (!validator.isEmail(emailInput.val())) {
+                is_valid = false;
+                emailInput.addClass('is-invalid');
+                emailInput.siblings('.invalid-feedback').html('Input valid email');
+            }
+            return is_valid;
+        });
+    });
+    </script>
+{% endblock %}

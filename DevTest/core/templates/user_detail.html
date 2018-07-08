@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>{{ user.name }}</h1>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">id: {{ user.id }}</li>
+                    <li class="list-group-item">External id: None</li>
+                    <li class="list-group-item">Company: {{ user.company }}</li>
+                    <li class="list-group-item">Email: {{ user.email }}</li>
+                    <li class="list-group-item">Phone: {{ user.phone }}</li>
+                    <li class="list-group-item">Interests: {{ user.interests }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
