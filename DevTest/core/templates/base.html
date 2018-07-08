@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>DevTest</title>
+    <link rel="stylesheet" href="{% static 'core/css/libs/bootstrap.min.css' %}">
+    <script src="{% static 'core/js/libs/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'core/js/libs/validator.min.js' %}"></script>
+    <script src="{% static 'core/js/libs/inputmask.min.js' %}"></script>
+    <script src="{% static 'core/js/libs/inputmask.phone.min.js' %}"></script>
+    <script src="{% static 'core/js/libs/bootstrap.bundle.min.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    {% if messages %}
+        <div class="row">
+            <div class="col">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show mt-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

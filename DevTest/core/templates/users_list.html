@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>Contacts</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form class="form-inline my-2 my-lg-0 d-inline-block search-form">
+                <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search"
+                       aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <a class="btn btn-primary ml-2" href="{% url 'core:create_user' %}" role="button">Create</a>
+            <div class="btn-group ml-2">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    Export
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'core:users_export' %}?format=csv">csv</a>
+                    <a class="dropdown-item" href="{% url 'core:users_export' %}?format=json">json</a>
+                </div>
+            </div>
+            <a class="btn btn-info ml-2 upload" href="{% url 'core:create_user' %}" role="button">Import</a>
+{#            <div class="btn-group ml-2">#}
+{#                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"#}
+{#                        aria-expanded="false">#}
+{#                    Import#}
+{#                </button>#}
+{#                <div class="dropdown-menu">#}
+{#                    <a class="dropdown-item upload">csv</a>#}
+{#                    <a class="dropdown-item upload" href="{% url 'core:users_export' %}?format=json">json</a>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="d-none">
+                <form method="post" action="{% url 'core:users_import' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="file" class="form-control-file" id="fileInput" name="file" accept=".json, .csv">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Interests</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.company }}</td>
+                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                        <td><a href="tel:{{ user.phone }}">{{ user.phone }}</a></td>
+                        <td>{{ user.interests }}</td>
+                        <td>
+                            <a class="btn btn-primary" href="{% url 'core:user_detail' user.id %}"
+                               role="button">Details</a>
+                            <a class="btn btn-info" href="{% url 'core:update_user' user.id %}" role="button">Edit</a>
+                            <a class="btn btn-danger" href="{% url 'core:delete_user' user.id %}"
+                               role="button">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">Not found :c</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if page_obj.has_other_pages %}
+        <div class="row">
+            <div class="col">
+                <nav>
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ page_obj.previous_page_number }}" data-page-param="page"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }} <span
+                                class="sr-only">(current)</span></a></li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ page_obj.next_page_number }}" data-page-param="page"
+                                   aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            let location = new URL(window.location);
+            const searchForm = $('.search-form');
+            const search = location.searchParams.get('search');
+            const fileInput = $('#fileInput');
+
+            if (search) {
+                searchForm.find('input[name=search]').val(search)
+            }
+
+            searchForm.submit(function (event) {
+                const $this = $(this);
+                location.searchParams.delete('page');
+                location.searchParams.set('search', $this.find('input[name="search"]').val());
+                window.location = location.href;
+                return false
+            });
+
+            $('.page-link').click(function (event) {
+                const $this = $(this);
+                const pageParam = $this.data('page-param');
+                const pageNum = $this.attr('href');
+                event.preventDefault();
+                location.searchParams.set(pageParam, pageNum);
+                window.location = location.href;
+            });
+
+            $('.upload').click(function (event) {
+                event.preventDefault();
+                fileInput.click();
+            });
+
+            fileInput.change(function (event) {
+                let $this = $(this);
+                $this.closest('form').submit();
+            });
+        });
+    </script>
+{% endblock %}
